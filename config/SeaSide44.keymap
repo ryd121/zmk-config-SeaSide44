@@ -1,13 +1,12 @@
+#include <input/processors.dtsi>
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
 #include <dt-bindings/zmk/pointing.h>
-#include <input/processors.dtsi>
 
 #define MOUSE 4
 #define SCROLL 5
 #define NUM 6
-
 
 / {
     combos { compatible = "zmk,combos"; };
@@ -86,9 +85,9 @@
 
         SCROLL {
             bindings = <
-&trans  &trans  &trans  &trans  &trans  &trans                                          &trans            &trans  &trans  &trans  &trans  &kp N0
-&trans  &trans  &trans  &trans  &trans  &trans                                          &trans            &trans  &trans  &trans  &trans  &kp N1
-&trans  &trans  &trans  &trans  &trans  &trans                                          &trans            &trans  &trans  &trans  &trans  &kp N2
+&trans  &trans  &trans  &trans  &trans  &trans                                          &trans            &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                          &trans            &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans                                          &trans            &trans  &trans  &trans  &trans  &trans
                 &trans  &trans  &trans  &kp LS(LG(N5))  &kp LS(LG(N4))    &kp LC(DOWN)  &kp LC(UP_ARROW)          &trans
             >;
         };

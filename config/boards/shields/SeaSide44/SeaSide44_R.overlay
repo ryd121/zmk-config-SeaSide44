@@ -1,43 +1,33 @@
+
 #include "SeaSide44.dtsi"
-#include <input/processors.dtsi> // ファイルの先頭付近に記述
 
 &default_transform {
     col-offset = <6>;
 };
 
 /* キーマトリクスの設定 */
+// 上が外側、下が内側カラムcol番号と実際の配置が直感と逆になってる
 &kscan0 {
-    col-gpios
-        = <&gpio1 10 GPIO_ACTIVE_HIGH>
-        , <&xiao_d 10 GPIO_ACTIVE_HIGH>
-        , <&xiao_d 9 GPIO_ACTIVE_HIGH> 
-        , <&xiao_d 8 GPIO_ACTIVE_HIGH> 
-        , <&xiao_d 7 GPIO_ACTIVE_HIGH> 
-        , <&gpio0 10 GPIO_ACTIVE_HIGH>
-        ;
+        col-gpios
+            = <&gpio1 10 GPIO_ACTIVE_HIGH>
+            , <&xiao_d 10 GPIO_ACTIVE_HIGH>
+            , <&xiao_d 9 GPIO_ACTIVE_HIGH> 
+            , <&xiao_d 8 GPIO_ACTIVE_HIGH> 
+            , <&xiao_d 7 GPIO_ACTIVE_HIGH> 
+            , <&gpio0 10 GPIO_ACTIVE_HIGH>
+            ;
 };
 
-/* トラックボールのリスナー設定 (統合版) */
+/* Trackball のリスナー */ 
 / {
-    trackball_listener: trackball_listener {
+    trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
 
-        /* トラックボール操作でレイヤー5を有効化 (タイムアウト10000ms) */
-        input-processors = <&zip_temp_layer 5 10000>;
     };
 };
 
-/* Input Processor の詳細設定 */
-&zip_temp_layer {
-    /* 除外したいキーのポジションを指定 */
-    excluded-positions = <
-        18 // 例: Jキー
-        19 // 例: Kキー
-    >;
-};
-
-/* SPI 設定 (既存のまま) */
+/* SPI 設定 */
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
@@ -57,8 +47,10 @@
     };
 };
 
+/* シリアルを無効化 */
 &xiao_serial { status = "disabled"; };
 
+/* SPI デバイス (トラックボール) */
 &spi0 {
     status = "okay";
     compatible = "nordic,nrf-spim";
@@ -73,9 +65,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        
-        /* 注意: 下記を有効にすると ZIP の設定と競合する可能性があるため、*/
-        /* 新しい input-processors 方式を使う場合はコメントアウトを推奨します。 */
-        // scroll-layers = <5>; 
+        // automouse-layer = <4>; //ここをコメントアウトするとオートマウスレイヤーがオフになる
+        scroll-layers = <5>;
     };
 };

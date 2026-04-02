@@ -1,12 +1,11 @@
 #include "SeaSide44.dtsi"
-#include <input/processors.dtsi>
+#include <input/processors.dtsi> // ファイルの先頭付近に記述
 
 &default_transform {
     col-offset = <6>;
 };
 
 /* キーマトリクスの設定 */
-// 上が外側、下が内側カラムcol番号と実際の配置が直感と逆になってる
 &kscan0 {
     col-gpios
         = <&gpio1 10 GPIO_ACTIVE_HIGH>
@@ -18,68 +17,27 @@
         ;
 };
 
-/* マクロ・ビヘイビア・リスナーの設定 */
+/* トラックボールのリスナー設定 (統合版) */
 / {
     trackball_listener: trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
-        // スクロール用の一時レイヤーは5を指定
+
+        /* トラックボール操作でレイヤー5を有効化 (タイムアウト10000ms) */
         input-processors = <&zip_temp_layer 5 10000>;
-    };
-
-    macros {
-        exit_AML: exit_AML {
-            compatible = "zmk,behavior-macro";
-            wait-ms = <0>;
-            tap-ms = <0>;
-            #binding-cells = <0>;
-            // オートマウスレイヤー(AML)は4を指定してオフにする
-            bindings = <&tog_off 4>;
-            label = "exit_AML";
-        };
-
-        kp_exit_AML: kp_exit_AML {
-            compatible = "zmk,behavior-macro-one-param";
-            wait-ms = <0>;
-            tap-ms = <0>;
-            #binding-cells = <1>;
-            // MACRO_PLACEHOLDER を 0 に変更し、parse errorを回避
-            bindings = <&macro_param_1to1 &kp 0 &exit_AML>;
-            label = "KP_exit_AML";
-        };
-    };
-
-    behaviors {
-        tog_off: toggle_layer_off {
-            compatible = "zmk,behavior-toggle-layer";
-            #binding-cells = <1>;
-            display-name = "Toggle Layer Off";
-            toggle-mode = "off";
-        };
-
-        mt_exit_AML_on_tap: mt_exit_AML_on_tap {
-            compatible = "zmk,behavior-hold-tap";
-            label = "MT_exit_AML_ON_TAP";
-            bindings = <&kp>, <&kp_exit_AML>;
-
-            #binding-cells = <2>;
-            tapping-term-ms = <200>;
-            flavor = "balanced";
-            quick-tap-ms = <200>;
-        };
     };
 };
 
-/* Input Processors の設定 */
+/* Input Processor の詳細設定 */
 &zip_temp_layer {
-    require-prior-idle-ms = <200>;
+    /* 除外したいキーのポジションを指定 */
     excluded-positions = <
-        18 // J
-        19 // K
+        18 // 例: Jキー
+        19 // 例: Kキー
     >;
 };
 
-/* SPI 設定 */
+/* SPI 設定 (既存のまま) */
 &pinctrl {
     spi0_default: spi0_default {
         group1 {
@@ -99,10 +57,8 @@
     };
 };
 
-/* シリアルを無効化 */
 &xiao_serial { status = "disabled"; };
 
-/* SPI デバイス (トラックボール) */
 &spi0 {
     status = "okay";
     compatible = "nordic,nrf-spim";
@@ -117,7 +73,9 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        //automouse-layer = <4>; //ここをコメントアウトするとオートマウスレイヤーがオフになる
-        scroll-layers = <5>;
+        
+        /* 注意: 下記を有効にすると ZIP の設定と競合する可能性があるため、*/
+        /* 新しい input-processors 方式を使う場合はコメントアウトを推奨します。 */
+        // scroll-layers = <5>; 
     };
 };

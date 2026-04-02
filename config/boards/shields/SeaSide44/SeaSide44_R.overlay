@@ -1,4 +1,7 @@
 #include "SeaSide44.dtsi"
+#include <input/processors.dtsi>
+
+#define MOUSE 5
 
 &default_transform {
     col-offset = <6>;
@@ -7,23 +10,77 @@
 /* キーマトリクスの設定 */
 // 上が外側、下が内側カラムcol番号と実際の配置が直感と逆になってる
 &kscan0 {
-        col-gpios
-            = <&gpio1 10 GPIO_ACTIVE_HIGH>
-            , <&xiao_d 10 GPIO_ACTIVE_HIGH>
-            , <&xiao_d 9 GPIO_ACTIVE_HIGH> 
-            , <&xiao_d 8 GPIO_ACTIVE_HIGH> 
-            , <&xiao_d 7 GPIO_ACTIVE_HIGH> 
-            , <&gpio0 10 GPIO_ACTIVE_HIGH>
-            ;
+    col-gpios
+        = <&gpio1 10 GPIO_ACTIVE_HIGH>
+        , <&xiao_d 10 GPIO_ACTIVE_HIGH>
+        , <&xiao_d 9 GPIO_ACTIVE_HIGH> 
+        , <&xiao_d 8 GPIO_ACTIVE_HIGH> 
+        , <&xiao_d 7 GPIO_ACTIVE_HIGH> 
+        , <&gpio0 10 GPIO_ACTIVE_HIGH>
+        ;
 };
 
-/* Trackball のリスナー */ 
+/* マクロ・ビヘイビア・リスナーの設定 */
 / {
-    trackball_listener {
+    trackball_listener: trackball_listener {
         compatible = "zmk,input-listener";
         device = <&trackball>;
-
+        input-processors = <&zip_temp_layer MOUSE 10000>;
     };
+
+    macros {
+        exit_AML: exit_AML {
+            compatible = "zmk,behavior-macro";
+            wait-ms = <0>;
+            tap-ms = <0>;
+            #binding-cells = <0>;
+            bindings = <&tog_off MOUSE>;
+            label = "exit_AML";
+        };
+
+        kp_exit_AML: kp_exit_AML {
+            compatible = "zmk,behavior-macro-one-param";
+            wait-ms = <0>;
+            tap-ms = <0>;
+            #binding-cells = <1>;
+            bindings = <&macro_param_1to1 &kp MACRO_PLACEHOLDER &exit_AML>;
+            label = "KP_exit_AML";
+        };
+    };
+
+    behaviors {
+        tog_off: toggle_layer_off {
+            compatible = "zmk,behavior-toggle-layer";
+            #binding-cells = <1>;
+            display-name = "Toggle Layer Off";
+            toggle-mode = "off";
+        };
+
+        mt_exit_AML_on_tap: mt_exit_AML_on_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MT_exit_AML_ON_TAP";
+            bindings = <&kp>, <&kp_exit_AML>;
+
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            flavor = "balanced";
+            quick-tap-ms = <200>;
+        };
+    };
+};
+
+/* Input Processors の設定 */
+&zip_temp_layer {
+    require-prior-idle-ms = <200>;
+    excluded-positions = <
+        18 // J
+        19 // K
+        20 // l 
+    >;
+};
+
+&mkp_input_listener {
+    input-processors = <&zip_temp_layer MOUSE 10000>;
 };
 
 /* SPI 設定 */
@@ -64,8 +121,7 @@
         reg = <0>;
         spi-max-frequency = <2000000>;
         irq-gpios = <&gpio0 2 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-        automouse-layer = <4>; //ここをコメントアウトするとオートマウスレイヤーがオフになる
+        //automouse-layer = <4>; //ここをコメントアウトするとオートマウスレイヤーがオフになる
         scroll-layers = <5>;
     };
 };
-

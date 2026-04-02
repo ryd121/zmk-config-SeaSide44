@@ -68,7 +68,7 @@
 &kp ESC   &kp EQUAL  &kp KP_NUMBER_7  &kp KP_NUMBER_8  &kp KP_NUMBER_9  &kp PLUS                              &kp LS(NUMBER_1)  &kp LS(NUMBER_2)  &kp LS(NUMBER_3)  &kp LS(NUMBER_4)  &kp LS(N5)        &kp DEL
 &mkp MB5  &kp SLASH  &kp KP_NUMBER_4  &kp KP_NUMBER_5  &kp KP_NUMBER_6  &kp MINUS                             &kp LS(NUMBER_6)  &kp UP_ARROW      &kp LS(NUMBER_7)  &kp LS(NUMBER_8)  &kp LS(NUMBER_9)  &kp LS(NUMBER_0)
 &mkp MB4  &trans     &kp KP_NUMBER_1  &kp KP_NUMBER_2  &kp KP_NUMBER_3  &kp ASTERISK                          &kp LEFT_ARROW    &kp DOWN_ARROW    &kp RIGHT_ARROW   &kp EQUAL         &kp LBRC          &kp RIGHT_BRACE
-                     &kp KP_NUMBER_0  &kp DOT          &trans           &trans        &mkp RCLK    &kp SPACE  &kp ENTER                           &trans
+                     &kp KP_NUMBER_0  &kp DOT          &trans           &trans        &mkp RCLK    &kp SPACE  &kp ENTER                           &p
             >;
         };
 

@@ -48,7 +48,7 @@
             quick-tap-ms = <200>;
         };
     };
-}
+};
 &mkp_input_listener {
     input-processors = <&zip_temp_layer 5 10000>;
 };
